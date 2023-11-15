@@ -8,20 +8,17 @@
 // WHEN I test API POST and DELETE routes in Insomnia
 // THEN I am able to successfully create and delete reactions to thoughts and add and remove friends to a user’s friend list
 const express = require('express');
-const mongoose = require('mongoose');
+const db = require('./config/connection');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(routes);
 
-mongoose.connect('mongodb://localhost/social-network', {
-});
-
-app.use('/api/users', require('./routes/userRoutes'));
-app.use('/api/thoughts', require('./routes/thoughtRoutes'));
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+db.once('open', () => {
+  app.listen(PORT, () => {
+    console.log(`API server for ${activity} running on port ${PORT}!`);
+  });
 });
