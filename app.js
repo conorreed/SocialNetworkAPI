@@ -17,10 +17,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 mongoose.connect('mongodb://localhost/social-network', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false,
+  //useNewUrlParser: true,
+  //useUnifiedTopology: true,
+/*   useCreateIndex: true,
+  useFindAndModify: false, */
 });
 
 app.use('/api/users', require('./routes/userRoutes'));

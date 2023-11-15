@@ -1,4 +1,6 @@
-const { Thought, User } = require('../models');
+const { Thought } = require('../models/Thought');
+const { User } = require('../models/User');
+
 
 const thoughtController = {
   // GET to get all thoughts
