@@ -23,8 +23,8 @@ mongoose.connect('mongodb://localhost/social-network', {
   useFindAndModify: false,
 });
 
-app.use('/api/users', require('./routes/user-routes'));
-app.use('/api/thoughts', require('./routes/thought-routes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/thoughts', require('./routes/thoughtRoutes'));
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
