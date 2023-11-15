@@ -1,39 +1,115 @@
-const { Thought } = require('../models/Thought');
-const { User } = require('../models/User');
-
 const { User, Thought } = require('../models');
 
-const userController = {
-  getAllUsers(req, res) {
-    // Implement logic to get all users
+module.exports = {
+  // Get all users
+  async getUsers(req, res) {
+    try {
+      const users = await User.find();
+      res.json(users);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  getUserById(req, res) {
-    // Implement logic to get a single user by ID
+  // Get a single user
+  async getSingleUser(req, res) {
+    try {
+      const user = await User.findOne({ _id: req.params.userId }).select('-__v');
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  createUser(req, res) {
-    // Implement logic to create a new user
+  // Create a new user
+  async createUser(req, res) {
+    try {
+      const user = await User.create(req.body);
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  updateUser(req, res) {
-    // Implement logic to update a user by ID
+  // Update a user by ID
+  async updateUser(req, res) {
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({ message: 'No user with this ID!' });
+      }
+
+      res.json(updatedUser);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  deleteUser(req, res) {
-    // Implement logic to delete a user by ID
+  // Delete a user and associated apps
+  async deleteUser(req, res) {
+    try {
+      const user = await User.findOneAndDelete({ _id: req.params.userId });
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with that ID' });
+      }
+
+      await Application.deleteMany({ _id: { $in: user.applications } });
+      res.json({ message: 'User and associated apps deleted!' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  addFriend(req, res) {
-    // Implement logic to add a friend to a user's friend list
+  // Add a friend to a user's friend list
+  async addFriend(req, res) {
+    try {
+      const { userId, friendId } = req.params;
+
+      const user = await User.findOneAndUpdate(
+        { _id: userId },
+        { $addToSet: { friends: friendId } },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with this ID!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 
-  removeFriend(req, res) {
-    // Implement logic to remove a friend from a user's friend list
+  // Remove a friend from a user's friend list
+  async removeFriend(req, res) {
+    try {
+      const { userId, friendId } = req.params;
+
+      const user = await User.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { friends: friendId } },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: 'No user with this ID!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
   },
 };
-
-module.exports = userController;
-
-
-module.exports = userController;

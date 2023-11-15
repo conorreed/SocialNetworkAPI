@@ -9,6 +9,7 @@
 // THEN I am able to successfully create and delete reactions to thoughts and add and remove friends to a user’s friend list
 const express = require('express');
 const db = require('./config/connection');
+const routes = require('./routes');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
